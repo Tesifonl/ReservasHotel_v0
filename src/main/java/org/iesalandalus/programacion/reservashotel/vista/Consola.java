@@ -2,6 +2,7 @@ package org.iesalandalus.programacion.reservashotel.vista;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import org.iesalandalus.programacion.reservashotel.dominio.Habitacion;
 import org.iesalandalus.programacion.reservashotel.dominio.Huesped;
@@ -17,37 +18,32 @@ public class Consola {
 	}
 	
 	public static void mostrarMenu() {
-		
+	/*• El método mostrarMenu es correcto, pero usa los métodos de la clase Enum, por ejemplo,
+	 *  values(), para que no tengas que estar modificando este método cada vez que se añada
+	 *   una nueva opción, tal y como lo expliqué el otro día en clase.
+	*/	
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("Opciones: ");
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("");
-		System.out.println ("1º.-Insertar huesped");
-		System.out.println ("2º.-Buscar huesped");
-		System.out.println ("3º.-Borrar huesped");
-		System.out.println ("4º.-Mostrar huespedes");
-		System.out.println ("5º.-Insertar habitacion");
-		System.out.println ("6º.-Buscar habitacion");
-		System.out.println("7º.-Borrar habitacion");
-		System.out.println("8.-Mostrar habitaciones");
-		System.out.println ("9.-Insertar reserva");
-		System.out.println ("10º-Anular reserva");
-		System.out.println ("11º-Mostrar reserva");
-		System.out.println ("12º-Consultar disponibilidad");
-		System.out.println("");
-		System.out.println("0º.-Salir");
-		System.out.println("");
-		
+        for (int i = 0; i < Opcion.values().length; i++) {
+        	System.out.println(Opcion.values()[i].toString());
+        }
 	}
 	
 	public static Opcion elegirOpcion() {
+		/*• El método elegirOpcion valida que la opción elegida esté entre los números
+		 *  de opciones correctas. Usa los métodos de la clase Enum para no tener que poner
+		 *   los números a mano ya que si añades nuevas opciones, tienes que modificar 
+		 *   este método. Lo puedes hacer usando values().length.
+		*/
 		int opciones;
 		Opcion opcionElegida=Opcion.CONSULTAR_DISPONIBILIDAD;
 		
 		do {
 			System.out.println("Introduzca la opcion a elegir");
 			opciones=Entrada.entero();
-		}while (opciones<0 || opciones>12);
+		}while (opciones<0 || opciones>=Opcion.values().length);
 		
 		
 		switch (opciones)
@@ -154,15 +150,16 @@ public class Consola {
            
             LocalDate fechaLocalDate = LocalDate.parse(mensaje, formatter);
             return fechaLocalDate;
-            
-        	} catch (Exception e) {
+    /*• El método leerFecha debe tratar la excepción DateTimeParseException. */
+        } catch (DateTimeParseException e) {
             System.out.println(e.getMessage());
             return null;
         }
 	}
 	
 	public static Habitacion leerHabitacion( ) {
-	
+	  /* • El método leerHabitacion no tiene que leer el identificador. Ese atributo es un campo calculado del número de puerta y del número de planta.*/
+	  /* • El método leerHabitacion tiene que usar el método leerTipoHabitacion para saber cual es el tipo de habitación a crear. Tal y como lo tienes, el usuario puede introducir cualquier cadena para el tipo de habitación. Debes llamar al método para que te muestre una lista de los tipos y se elija el que corresponde a la habitación que se está creando. Es algo similar a lo que se hizo con  el leerColor en la  tarea 3.*/
 			try {
 			System.out.println("Introduce un planta: ");
 			int planta=Entrada.entero();
@@ -170,10 +167,9 @@ public class Consola {
 			int puerta=Entrada.entero();
 			System.out.println("Introduce un precio: ");
 			double precio=Entrada.real();
-			System.out.println("Introduce un identificador: ");
-			String identificador=Entrada.cadena();
+			String identificador=String.valueOf(planta)+String.valueOf(puerta);
 			System.out.println("Introduce una  tipo de habitacion: ");
-			TipoHabitacion tipoHabitacion=TipoHabitacion.valueOf(Entrada.cadena());
+			TipoHabitacion tipoHabitacion=leerTipoHabitacion();
 
 			Habitacion habitacion=new Habitacion( planta,puerta,precio,identificador,tipoHabitacion);
 			return habitacion;
@@ -288,5 +284,13 @@ public class Consola {
 		return null;
 		}
 	}
+	
+/*
+    • El método mostrarMenu es correcto, pero usa los métodos de la clase Enum, por ejemplo, values(), para que no tengas que estar modificando este método cada vez que se añada una nueva opción, tal y como lo expliqué el otro día en clase.
+    • El método elegirOpcion valida que la opción elegida esté entre los números de opciones correctas. Usa los métodos de la clase Enum para no tener que poner los números a mano ya que si añades nuevas opciones, tienes que modificar este método. Lo puedes hacer usando values().length.
+    • El método leerFecha debe tratar la excepción DateTimeParseException. 
+    • El método leerHabitacion no tiene que leer el identificador. Ese atributo es un campo calculado del número de puerta y del número de planta.
+    • El método leerHabitacion tiene que usar el método leerTipoHabitacion para saber cual es el tipo de habitación a crear. Tal y como lo tienes, el usuario puede introducir cualquier cadena para el tipo de habitación. Debes llamar al método para que te muestre una lista de los tipos y se elija el que corresponde a la habitación que se está creando. Es algo similar a lo que se hizo con  el leerColor en la  tarea 3.
+*/
 	
 }

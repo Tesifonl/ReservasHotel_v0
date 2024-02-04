@@ -9,12 +9,14 @@ public class Huespedes {
 	
 	private int capacidad;
 	private int tamano;
-	private static Huesped [] huespedes;
-	
-	
+	private static Huesped [] coleccionHuespedes;
+    //El atributo huespedes debe llamarse coleccionHuespedes, tal y como indica el diagrama de clases.
+
+    //El constructor no inicializa el atributo capacidad al valor pasado como parámetro. 
 	public Huespedes(int capacidad) {
 		if(capacidad>0) {
-		huespedes=new Huesped [capacidad];
+			this.capacidad=capacidad;
+			coleccionHuespedes=new Huesped [capacidad];
 		}else {throw new IllegalArgumentException("ERROR: La capacidad debe ser mayor que cero.");}
 	}
 	
@@ -27,29 +29,27 @@ public class Huespedes {
 	
 	
 	private Huesped [] copiaProfundaHuespedes() {
-		Huesped [] copiahuespedes=new Huesped [huespedes.length];
+		Huesped [] copiahuespedes=new Huesped [coleccionHuespedes.length];
 		
-		for (int i=0;i<huespedes.length;i++) {
-		if(huespedes[i]!=null) {copiahuespedes[i]=new Huesped(huespedes[i]);}
+		for (int i=0;i<coleccionHuespedes.length;i++) {
+		if(coleccionHuespedes[i]!=null) {copiahuespedes[i]=new Huesped(coleccionHuespedes[i]);}
 		else {copiahuespedes[i]=null;}
 		}
 		return copiahuespedes;
 	}
 
+    //El método getTamano tiene mensajes con sysout. Las clases internas nunca deben escribir nada por pantalla. Borra dichos mensajes para la próxima entrega.
 	public int getTamano () {
 		int tamano=0;
 		
-		for (int i=0;i<huespedes.length;i++) {
-		if(huespedes[i]!=null) {tamano++;}
-		else {System.out.println("Nulo");};
-		}
-		System.out.println(tamano);
+		for (int i=0;i<coleccionHuespedes.length;i++) {
+		if(coleccionHuespedes[i]!=null) {tamano++;}}
 		return tamano;
 	}
 	
 	public int getCapacidad () {
-		System.out.println(huespedes.length);
-			return huespedes.length;
+		System.out.println(coleccionHuespedes.length);
+			return coleccionHuespedes.length;
 	}
 	
 	/*huespedes[i] != null && huespedes[i].equals(objetoComparado)*/
@@ -58,33 +58,36 @@ public class Huespedes {
 		boolean noEncontrado=false;
 		
 		if(huesped!=null) {
-			for (int i=0;i<huespedes.length;i++) 
-			if(huespedes[i] != null && huespedes[i].equals(huesped)) {throw new OperationNotSupportedException("ERROR: Ya existe un hu�sped con ese dni.");}
+			for (int i=0;i<coleccionHuespedes.length;i++) 
+			if(coleccionHuespedes[i] != null && coleccionHuespedes[i].equals(huesped)) {throw new OperationNotSupportedException("ERROR: Ya existe un hu�sped con ese dni.");}
 			else {noEncontrado=true;}
 					
-			if(noEncontrado==true && getTamano()<getCapacidad()) {huespedes[getTamano()]=huesped;}
+			if(noEncontrado==true && getTamano()<getCapacidad()) {coleccionHuespedes[getTamano()]=huesped;}
 			else {throw new OperationNotSupportedException("ERROR: No se aceptan m�s hu�spedes.");}
 			
 		}else {throw new NullPointerException("ERROR: No se puede insertar un hu�sped nulo.");}
 	}
 	
+    //En el método buscarIndice, completa el mensaje de error si el objeto pasado como parámero es null.
+    //En el método buscarIndice, la sentencia de la línea 81 no sé que sentido tiene.
 	public int buscarIndice (Huesped huesped) {
 		if(huesped!=null) {
-			int contador=0;
+			//int contador=0;
 			int posicion=0;
 	
-			for (int i=0;i<huespedes.length;i++) {
-				contador=i;
-				posicion=contador;
+			for (int i=0;i<coleccionHuespedes.length;i++) {
+				//contador=i;
+				//posicion=contador;
 				
-				if (huespedes[i] != null && huespedes[i].equals(huesped)) {posicion=contador;}
-				{posicion=0;}
+				if (coleccionHuespedes[i] != null && coleccionHuespedes[i].equals(huesped)) {posicion=i;}
+				//{posicion=0;}
 			}
 			return posicion;		
-		}else {throw new NullPointerException("ERROR:");}
+		}else {throw new NullPointerException("ERROR: No se puede buscar un huesped nulo");}
 	}
-	
-	public boolean tamañoSuperado(int indice) {
+ 
+    //El método no se llama tamañoSuperado, se llama tamanoSuperado. Ten en cuenta que la ñ y las letras con tildes no las puedes poner como identificadores.
+	public boolean tamanoSuperado(int indice) {
 		boolean superado=false;
 		
 		if (indice> getTamano()) {superado=true;}
@@ -102,32 +105,32 @@ public class Huespedes {
 		return superado;
 	}
 	
-	
+	//En el método buscar, completa el mensaje de error si el objeto pasado como parámero es null.
+    //El método buscar tiene mensajes con sysout. Las clases internas nunca deben escribir nada por pantalla. Borra dichos mensajes para la próxima entrega.
 	public Huesped buscar(Huesped huesped) {	
 		if(huesped!=null) {
 			boolean encontrado=false;
 			
-			for (int i=0;i<huespedes.length;i++) {
-			if(huespedes[i] != null && huespedes[i].equals(huesped)) {encontrado=true;}
-			else {System.out.println("No encontrado");}}
+			for (int i=0;i<coleccionHuespedes.length;i++) {
+			if(coleccionHuespedes[i] != null && coleccionHuespedes[i].equals(huesped)) {encontrado=true;}}
 			
 			if (encontrado==true) {return new Huesped(huesped);}else {return null;}
-		}else {throw new NullPointerException("ERROR:");}
+		}else {throw new NullPointerException("ERROR: No se puede buscar un huesped nulo");}
 	}
-		
+	
+    //El método borrar tiene mensajes con sysout. Las clases internas nunca deben escribir nada por pantalla. Borra dichos mensajes para la próxima entrega.
 	public void borrar (Huesped huesped) throws OperationNotSupportedException  {
 		boolean encontrado=false;
 		
 		if(huesped!=null) {
 		int contador=0;
 		int indice=0;
-			for (int i=0;i<huespedes.length;i++) {
+			for (int i=0;i<coleccionHuespedes.length;i++) {
 				contador=i;
-				if(huespedes[i] != null && huespedes[i].equals(huesped)) {
-				encontrado=true;indice=contador;}
-				else {System.out.println("No encontrado");}}	
+				if(coleccionHuespedes[i] != null && coleccionHuespedes[i].equals(huesped)) {
+				encontrado=true;indice=contador;}}	
 			
-			if (encontrado==true) {huespedes[indice] = null;
+			if (encontrado==true) {coleccionHuespedes[indice] = null;
 			desplazarUnaPosicionHaciaIzquierda(indice);}
 			else {throw new OperationNotSupportedException("ERROR: No existe ning�n hu�sped como el indicado.");}
 		
@@ -137,11 +140,24 @@ public class Huespedes {
 
 	public void desplazarUnaPosicionHaciaIzquierda(int indice) {
 		
-		for (int i=indice;i<huespedes.length-1;i++) {
-			huespedes[i]=huespedes[i+1];
-			huespedes [huespedes.length-1]=null;}
+		for (int i=indice;i<coleccionHuespedes.length-1;i++) {
+			coleccionHuespedes[i]=coleccionHuespedes[i+1];
+			coleccionHuespedes [coleccionHuespedes.length-1]=null;}
 			
 	}
 	
-	
+	/*
+	 
+    • El atributo huespedes debe llamarse coleccionHuespedes, tal y como indica el diagrama de clases.
+    • El constructor no inicializa el atributo capacidad al valor pasado como parámetro. 
+    • El método no se llama tamañoSuperado, se llama tamanoSuperado. Ten en cuenta que la ñ y las letras con tildes no las puedes poner como identificadores.
+    • El método getTamano tiene mensajes con sysout. Las clases internas nunca deben escribir nada por pantalla. Borra dichos mensajes para la próxima entrega.
+    • En el método buscarIndice, completa el mensaje de error si el objeto pasado como parámero es null.
+    • En el método buscarIndice, la sentencia de la línea 81 no sé que sentido tiene.
+    • En el método buscar, completa el mensaje de error si el objeto pasado como parámero es null.
+    • El método buscar tiene mensajes con sysout. Las clases internas nunca deben escribir nada por pantalla. Borra dichos mensajes para la próxima entrega.
+    • El método borrar tiene mensajes con sysout. Las clases internas nunca deben escribir nada por pantalla. Borra dichos mensajes para la próxima entrega.
+    • La clase no tiene el código correctamente indentado.
+    
+	 */
 }

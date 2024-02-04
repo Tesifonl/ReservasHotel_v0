@@ -56,7 +56,11 @@ public class Habitacion {
 		identificador=Planta+Puerta;
 	}
 
+	/*En el método setIdentificador con parámetro no validas que el parámetro no sea null.*/
 	public void setIdentificador(String identificador) {
+		if (identificador == null) {
+			throw new NullPointerException("Error: El identificador no puede ser nulo.");
+		}
 		this.identificador = identificador;
 	}
 
@@ -122,7 +126,6 @@ public class Habitacion {
 		return "identificador="+ identificador +" ("+getPlanta()+"-"+getPuerta()+"), precio habitaci�n="+ precio +", tipo habitaci�n=" + tipoHabitacion ;
 	}
 	
-	
-	
+	/*En el método setIdentificador con parámetro no validas que el parámetro no sea null.*/
 	
 }

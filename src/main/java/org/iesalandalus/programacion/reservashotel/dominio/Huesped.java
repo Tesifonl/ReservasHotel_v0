@@ -20,8 +20,10 @@ public class Huesped {
 	private LocalDate fechaNacimiento;
 	
 	private String formateaNombre(String nombre) {
-		
-		String[] formatoNombre=nombre.split(" ");
+
+	    //El método formateaNombre, en la sentencia nombre.split(" "); usas como patrón uno que considera solo un espacio en blanco. Puede ocurrir que el usuario, queriendo o sin querer, introduzca más de un espacio en blanco entre las palabras del nombre. Por tanto, debes usar \\s+ como patrón, para que considere uno o más espacios en blanco. 
+
+		String[] formatoNombre=nombre.split("\\s");
 		nombre="";
 		
 		for (int i=0;i<formatoNombre.length;i++) 
@@ -31,6 +33,11 @@ public class Huesped {
 			else {nombre=nombre+formatoNombre[i];}}
 		return nombre;}
 	
+	
+	/*El método comprobarDni es correcto aunque se puede optimizar usando arrays. 
+	También puedes coger el número del dni y la letra usando los grupos de pattern & matcher 
+	como vimos en clase.*/
+    
 	private boolean comprobarLetraDni(String dni) {
 		
 		int resto=0;
@@ -51,17 +58,18 @@ public class Huesped {
 		return nombre;
 	}
 
+	/*En el método setNombre, tras las comprobaciones de que el nombre es correcto, 
+	solo debes asignar al atributo el resultado del método formateaNombre, 
+	no tienes que hacer las comprobraciones que haces de las tildes y demás. 
+	Eso provoca errores de compilación en los test.*/
+
 	public void setNombre(String nombre) {
 		if (nombre == null) { throw new NullPointerException("ERROR: El nombre de un hu�sped no puede ser nulo.");}
 		if (nombre.trim().equals("")) { throw new IllegalArgumentException("ERROR: El nombre de un hu�sped no puede estar vac�o.");}
 		
-		for (int i=0; i<nombre.length()-1;i++)
-				if ((nombre.charAt(i)>='A' && nombre.charAt(i)<='Z')||nombre.charAt(i)==32 ||
-					(nombre.charAt(i)>='a' && nombre.charAt(i)<='z')||
-					(nombre.charAt(i)>='á' && nombre.charAt(i)<='ú')||
-					(nombre.charAt(i)>=' ')){this.nombre = formateaNombre(nombre);}
-					else {throw new IllegalArgumentException("ERROR: El nombre no tiene un formato volido.");}
-		}		
+		this.nombre = formateaNombre(nombre);
+	}
+
 	
 
 	public String getTelefono() {
@@ -101,12 +109,20 @@ public class Huesped {
 		return fechaNacimiento;
 	}
 
-	public void setFechaNacimiento(LocalDate fechaNacimiento) {
-		if (fechaNacimiento==null) {throw new NullPointerException("ERROR: La fecha de nacimiento de un hu�sped no puede ser nula.");}
-		else  {this.fechaNacimiento=fechaNacimiento;}}
-
-				
+	/*El método setFechaNacimiento no comprueba que la fecha de nacimiento sea posterior a hoy. */
 	
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		if (fechaNacimiento==null) {
+			throw new NullPointerException("ERROR: La fecha de nacimiento de un hu�sped no puede ser nula.");
+		}
+		else if (fechaNacimiento.isAfter(LocalDate.now())) {
+			throw new NullPointerException("ERROR: La fecha de nacimiento hu�sped no puede posterior a la de hoy.");
+		}
+		else {
+			this.fechaNacimiento=fechaNacimiento;
+		}
+	}
+
 	public String getIniciales(String nombre) {
 		String ini="";
 		nombre=formateaNombre(nombre);
@@ -159,7 +175,10 @@ public class Huesped {
 	public String toString() {
 		return "nombre=" + nombre+ " ("+getIniciales(nombre) +")" + ", DNI=" + dni+ ", correo=" + correo + ", tel�fono=" + telefono+ ", fecha nacimiento=" + fechaNacimiento.format(formatoFechaString) ;
 	}
-	
-
-	
+	/*
+    • El método formateaNombre, en la sentencia nombre.split(" "); usas como patrón uno que considera solo un espacio en blanco. Puede ocurrir que el usuario, queriendo o sin querer, introduzca más de un espacio en blanco entre las palabras del nombre. Por tanto, debes usar \\s+ como patrón, para que considere uno o más espacios en blanco. 
+    • En el método setNombre, tras las comprobaciones de que el nombre es correcto, solo debes asignar al atributo el resultado del método formateaNombre, no tienes que hacer las comprobraciones que haces de las tildes y demás. Eso provoca errores de compilación en los test.
+    • El método comprobarDni es correcto aunque se puede optimizar usando arrays. También puedes coger el número del dni y la letra usando los grupos de pattern & matcher como vimos en clase.
+    • El método setFechaNacimiento no comprueba que la fecha de nacimiento sea posterior a hoy.
+	*/
 }

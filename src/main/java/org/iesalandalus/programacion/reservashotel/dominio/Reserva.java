@@ -4,15 +4,20 @@ package org.iesalandalus.programacion.reservashotel.dominio;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+
+import javax.swing.text.DateFormatter;
 
 public class Reserva {
 	
-	public static final int MAX_NUMERO_MESES_RESERVA=6;/*Le he puesto un valor aleatorio*/
+	public static final int MAX_NUMERO_MESES_RESERVA=6;
 	private static final int MAX_HORAS_POSTERIOR_CHECKOUT=12;
-	public static final String FORMATO_FECHA_RESERVA="yyyy-MM-dd";
-	public static final String FORMATO_FECHA_HORA_RESERVA="[1-2][0-9][0-9][0-9]-[0-1]+[0-9]-[0-1]+[0-9]";/*He tenido que crear esta variable para pasar los test*/
-
+	// Cambia la constante FORMATO_FECHA a un formato español: "dd/MM/yyyy"
+	public static final String FORMATO_FECHA_RESERVA="dd/MM/yyyy";
+	// Crea la constante FORMATO_FECHA_HORA_RESERVA con el formato "dd/MM/yyyy hh:mm:ss".
+	public static final String FORMATO_FECHA_HORA_RESERVA="dd/MM/yyyy hh:mm:ss";
 	
 	private Huesped huesped;
 	private Habitacion habitacion;
@@ -23,21 +28,30 @@ public class Reserva {
 	private LocalDateTime checkOut;
 	private double precio;
 	private int numeroPersonas;
+
 	
-	
+	//El método getHuesped tiene problemas de aliasing.
 	public Huesped getHuesped() {
-		return huesped;
+		return new Huesped(huesped);
 	}
+	
+	//El método setHuesped tiene problemas de aliasing.
 	public void setHuesped(Huesped huesped) {
 		if (huesped==null) {throw new NullPointerException("ERROR: El hu�sped de una reserva no puede ser nulo.");}
-		else {this.huesped = huesped;}
+		else {
+			this.huesped = new Huesped(huesped);
+		}
 	}
+	
+	//El método getHabitacion tiene problemas de aliasing.
 	public Habitacion getHabitacion() {
-		return habitacion;
+		return new Habitacion(habitacion);
 	}
+	
+	//El método setHabitacion tiene problemas de aliasing. 
 	public void setHabitacion(Habitacion habitacion) {
 		if (habitacion==null) {throw new NullPointerException("ERROR: La habitaci�n de una reserva no puede ser nula.");}
-		else {this.habitacion = habitacion;}
+		else {this.habitacion = new Habitacion(habitacion);}
 	}
 	public Regimen getRegimen() {
 		return regimen;
@@ -83,19 +97,28 @@ public class Reserva {
 		if (checkOut.isAfter(fechaFinReserva.atTime(MAX_HORAS_POSTERIOR_CHECKOUT, 0))) 
 		{throw new IllegalArgumentException("ERROR: El checkout de una reserva puede ser como m�ximo 12 horas despu�s de la fecha de fin de la reserva.");}
 		else if (checkOut.isBefore(checkIn)){throw new IllegalArgumentException("ERROR: El checkout de una reserva no puede ser anterior al checkin.");}
-		else {this.checkOut = checkOut;}
+		else {this.checkOut = checkOut;
+			  //Al realizar el checkout asignamos el precio de la reserva
+			  setPrecio();
+		}
 	}
 	
 	public double getPrecio() {
 		return precio;
 	}
 	
+	/*El método setPrecio no calcula bien la duración de los días. El numDiasReservas 
+	  te puede dar negativo. Usa la clase Period explicada en clase para determinar 
+	  el número de días transcurridos entre dos fechas.
+	 */
 	public void setPrecio() {
 		double precioRegimen=getRegimen().getIncrementoPrecio()*getNumeroPersonas();
-		int diasReserva1=getFechaInicioReserva().getDayOfMonth();
+		/*int diasReserva1=getFechaInicioReserva().getDayOfMonth();
 		int diasReserva2=getFechaFinReserva().getDayOfMonth();
-		int numDiasReserva=diasReserva2-diasReserva1;
-		precio=(precioRegimen+habitacion.getPrecio())*numDiasReserva;
+		int numDiasReserva=diasReserva2-diasReserva1;*/
+		
+		Period periodoReserva = Period.between(fechaInicioReserva, fechaFinReserva);
+		precio=(precioRegimen+habitacion.getPrecio())*periodoReserva.getDays();
 	}
 	
 	public int getNumeroPersonas() {
@@ -111,6 +134,13 @@ public class Reserva {
 		else {this.numeroPersonas=numeroPersonas;}
 	}
 	
+	/*El primero de los contructores debe establecer el precio a 0. No debe llamar a setPrecio 
+	  porque si modificas las fechas de inicio o de fin de la reserva o el tipo de regimen, 
+	  el precio cambia. Por tanto, si usas el setPrecio en el constructor, también deberás 
+	  llamarlo si modificas la fecha de inicio o la fecha de fin de la reserva o el regimen. 
+	  Lo mejor es que el setPrecio se llame cuando haces el checkout, tal y como indica el 
+	  enunciado.
+	 */
 	public Reserva(Huesped huesped,Habitacion habitacion, Regimen regimen,LocalDate fechaInicioReserva,LocalDate fechaFinReserva,int numeroPersonas) {
 		
 		setHuesped(huesped);
@@ -119,8 +149,7 @@ public class Reserva {
 		setFechaInicioReserva(fechaInicioReserva);
 		setFechaFinReserva(fechaFinReserva);
 		setNumeroPersonas(numeroPersonas);
-		setPrecio();/*He obligado a pasar este metodo para darle valor al precio pq sino no pasaba los test*/
-		
+		this.precio = 0;
 	}
 	
 	public Reserva(Reserva reserva) {
@@ -150,14 +179,50 @@ public class Reserva {
 		return Objects.equals(fechaInicioReserva, other.fechaInicioReserva)
 				&& Objects.equals(habitacion, other.habitacion);
 	}
+	
+	/*El método toString falla en uno de los test, pero es por el tema del número de 
+	decimales asignados al precio, a la hora de mostrar su valor.
+	*/
 	@Override
 	public String toString() {
 
-		return "Huesped: " + huesped.getNombre()+" "+huesped.getDni() + " Habitaci�n:"+ habitacion.getPlanta() + habitacion.getPuerta() + " - " +habitacion.getTipoHabitacion()
-				+ " Fecha Inicio Reserva: " + getFechaInicioReserva() + " Fecha Fin Reserva: " + getFechaFinReserva() + " Checkin: No registrado " + "Checkout: No registrado" + " Precio: " + getPrecio() + " Personas: " + numeroPersonas;
+		DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern(FORMATO_FECHA_RESERVA);
+		DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern(FORMATO_FECHA_HORA_RESERVA);
+		String formatoPrecio = String.format("%.2f", getPrecio());
+		String texto = "Huesped: " + huesped.getNombre()+" "+huesped.getDni() + " Habitaci�n:"+ habitacion.getPlanta() + habitacion.getPuerta() + " - " +habitacion.getTipoHabitacion()
+				+ " Fecha Inicio Reserva: " + getFechaInicioReserva().format(formatoFecha) 
+				+ " Fecha Fin Reserva: " + getFechaFinReserva().format(formatoFecha); 
+				
+				if (getCheckIn() != null) {
+					texto = texto + " Checkin: " + getCheckIn().format(formatoFechaHora);
+				}
+				else {
+					texto = texto + " Checkin: No registrado";
+				}
+				
+				if (getCheckOut() != null) {
+					texto = texto + " Checkout: " + getCheckOut().format(formatoFechaHora);
+				}
+				else {
+					texto = texto + " Checkout: No registrado";
+				}
+
+				texto =texto+ " Precio: " + formatoPrecio + " Personas: " + numeroPersonas;
+				
+		return texto;
 	}
 	
-
+/*
+    • El método getHuesped tiene problemas de aliasing.
+    • El método setHuesped tiene problemas de aliasing.
+    • El método getHabitacion tiene problemas de aliasing.
+    • El método setHabitacion tiene problemas de aliasing. 
+    • Cambia la constante FORMATO_FECHA a un formato español: "dd/MM/yyyy"
+    • Crea la constante FORMATO_FECHA_HORA_RESERVA con el formato "dd/MM/yyyy hh:mm:ss".
+    • El método setPrecio no calcula bien la duración de los días. El numDiasReservas te puede dar negativo. Usa la clase Period explicada en clase para determinar el número de días transcurridos entre dos fechas.
+    • El primero de los contructores debe establecer el precio a 0. No debe llamar a setPrecio porque si modificas las fechas de inicio o de fin de la reserva o el tipo de regimen, el precio cambia. Por tanto, si usas el setPrecio en el constructor, también deberás llamarlo si modificas la fecha de inicio o la fecha de fin de la reserva o el regimen. Lo mejor es que el setPrecio se llame cuando haces el checkout, tal y como indica el enunciado.
+    • El método toString falla en uno de los test, pero es por el tema del número de decimales asignados al precio, a la hora de mostrar su valor.
+*/
 	}
 
 

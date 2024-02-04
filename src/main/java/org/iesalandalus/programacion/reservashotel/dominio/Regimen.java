@@ -17,9 +17,11 @@ public enum Regimen {
 		return incrementoPrecio;
 	}
 	
+	/*Correcto, aunque el método toString debe devolver una cadena de la forma: 1.-Suite. Haz uso de los métodos de la clase Enum, como por ejemplo, ordinal() para conseguirlo. No te penalizo pero para la próxima entrega tenlo corregido.*/
+
     @Override
     public String toString() {
-        return cadenaAMostrar;
+        return (this.ordinal() + 1) + ".-"+ cadenaAMostrar;
     }
-	
+    /*Correcto, aunque el método toString debe devolver una cadena de la forma: 1.-Suite. Haz uso de los métodos de la clase Enum, como por ejemplo, ordinal() para conseguirlo. No te penalizo pero para la próxima entrega tenlo corregido.*/
 }
