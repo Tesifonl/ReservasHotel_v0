@@ -13,6 +13,7 @@ import org.iesalandalus.programacion.reservashotel.negocio.Huespedes;
 import org.iesalandalus.programacion.reservashotel.negocio.Reservas;
 import org.iesalandalus.programacion.reservashotel.vista.Consola;
 import org.iesalandalus.programacion.reservashotel.vista.Opcion;
+import org.iesalandalus.programacion.utilidades.Entrada;
 
 public class MainApp {
     
@@ -232,6 +233,8 @@ public class MainApp {
 	
 	public static void anularReserva() throws OperationNotSupportedException {
 		Reserva [] nuevoArray1=reservas.getReservas(Consola.getHuespedPorDni());
+		int contador=0;
+		int posicion=0;
 		
 		if (nuevoArray1.length > 0) {	
 			Reserva [] nuevoArray2=getReservasAnulables(nuevoArray1);
@@ -239,16 +242,35 @@ public class MainApp {
 			if (nuevoArray2.length > 0) {
 				for (int i=0;i<nuevoArray2.length;i++) {
 					if (nuevoArray2[i]!=null) {
+						contador++;
 						reservas.borrar(nuevoArray2[i]);
 					}
 				}
+				
+			if (contador==1) {
+				for (int i=0;i<nuevoArray2.length;i++) {
+					if (nuevoArray2[i]!=null) {
+						reservas.borrar(nuevoArray2[i]);
+						System.out.println("Borramos la unica reserva existente");
+					}
+				}
 			}
-			else {
-				System.out.println("No existe ninguna reserva anulable para este huesped");
+			
+			if (contador>1) {
+				for (int i=0;i<nuevoArray2.length;i++) {
+					if (nuevoArray2[i]!=null) {
+						posicion++;
+					} 
+				}
 			}
-		}
-		else {
-			System.out.println("No existe ninguna reserva para este huesped");
+			
+			System.out.println("Hay "+ posicion+" reservas, indica que reserva quieres borrar introduciendo un numero");
+			int numeroReservaBorrar=Entrada.entero();
+			reservas.borrar(nuevoArray2[numeroReservaBorrar]);
+			
+			
+			}else {
+				System.out.println("No existe ninguna reserva anulable para este huesped");}
 		}
 	}
 	
