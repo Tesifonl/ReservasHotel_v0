@@ -182,7 +182,6 @@ public class MainApp {
 	}
 	
 	public static void listarReservas(Huesped huesped) {
-
 		Reserva[] listadoReservas = reservas.getReservas(huesped);
 		
 		if (listadoReservas != null) {
@@ -199,7 +198,6 @@ public class MainApp {
 	}
 	
 	public static void listarReservas(TipoHabitacion tipoHabitacion) {
-
 		Reserva[] listadoReservas = reservas.getReservas(tipoHabitacion);
 		
 		if (listadoReservas != null) {
@@ -215,7 +213,6 @@ public class MainApp {
 	}
 	
 	public static Reserva[] getReservasAnulables(Reserva [] reservasAAnular) {
-		
 		Reserva[] nuevoArray = new Reserva[reservasAAnular.length];
 		int posicion = 0;
 		
@@ -225,7 +222,6 @@ public class MainApp {
 				posicion++;
 			}		
 		}
-		
 		if (posicion > 0) {
 			return nuevoArray; 
 		}
@@ -237,8 +233,7 @@ public class MainApp {
 	public static void anularReserva() throws OperationNotSupportedException {
 		Reserva [] nuevoArray1=reservas.getReservas(Consola.getHuespedPorDni());
 		
-		if (nuevoArray1.length > 0) {
-			
+		if (nuevoArray1.length > 0) {	
 			Reserva [] nuevoArray2=getReservasAnulables(nuevoArray1);
 			
 			if (nuevoArray2.length > 0) {
@@ -271,37 +266,26 @@ public class MainApp {
 	}
 	
 	public static Habitacion consultarDisponibilidad(TipoHabitacion tipoHabitacion, LocalDate fechaInicioReserva, LocalDate fechaFinReserva) {
-		
 		Habitacion habitacion = null;
-		
-		
-		for (int i = 0; i < habitaciones.getTamano() && habitacion == null; i++) {
+		boolean reservada = false;
 			
-			boolean reservada = true;
-			
-			for (int j = 0; j < reservas.getTamano(); j++) {
-				if (reservas.get()[j].getHabitacion().equals(habitaciones.get()[i]) 
-					&& (reservas.get()[j].getFechaFinReserva().isBefore(fechaInicioReserva)
-					|| reservas.get()[j].getFechaInicioReserva().isAfter(fechaFinReserva))){
-					reservada = false;
+		for (int i = 0; i < reservas.getTamano(); i++) {
+			if (reservas.get()[i].getHabitacion().getTipoHabitacion().equals(tipoHabitacion)
+				&& (reservas.get()[i].getFechaFinReserva().isBefore(fechaInicioReserva)
+				|| reservas.get()[i].getFechaInicioReserva().isAfter(fechaFinReserva))){
+				reservada = true;
+				habitacion=reservas.get()[i].getHabitacion();
 				}
 			}
-			
-			if (reservada == false) {
-				habitacion = habitaciones.get()[i];
-			}
-		}
-	
-		return habitacion; 
+			if (reservada == true) {
+				return habitacion;
+			}else {return null;}
 	}
 
     public static void main(String[] args) throws OperationNotSupportedException {
-    	
-
 		Consola.mostrarMenu();
 		Opcion opcion = Consola.elegirOpcion();
 		ejecutarOpcion(opcion);
-		
 		}
  /* 
     • Los atributos declarados en las líneas 20,21 y 22 no los usas porque vuelves a declarar tres variables con el mismo nombre dentro del método main. Debes usar los tres atributos ya que es lo que se muestra en el diagrama de clases.
