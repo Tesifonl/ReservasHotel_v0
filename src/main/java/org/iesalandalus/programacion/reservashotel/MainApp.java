@@ -216,18 +216,18 @@ public class MainApp {
 	
 	public static Reserva[] getReservasAnulables(Reserva [] reservasAAnular) {
 		
-		Reserva[] listaAnulables = new Reserva[reservasAAnular.length];
+		Reserva[] nuevoArray = new Reserva[reservasAAnular.length];
 		int posicion = 0;
 		
 		for (int i = 0; i < reservasAAnular.length; i++) {
 			if(reservasAAnular[i].getFechaInicioReserva().isAfter(LocalDate.now())) {
-				listaAnulables[posicion] = reservasAAnular[i];
+				nuevoArray[posicion] = reservasAAnular[i];
 				posicion++;
 			}		
 		}
 		
 		if (posicion > 0) {
-			return listaAnulables; 
+			return nuevoArray; 
 		}
 		else {
 			return null;
