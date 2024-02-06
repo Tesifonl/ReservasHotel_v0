@@ -28,7 +28,7 @@ public enum Opcion {
 	
     @Override
     public String toString() {
-        return (this.ordinal() + 1) + ".-" +mensajeAMostrar;
+        return (this.ordinal() + 1) + ".-" + mensajeAMostrar;
     }
 	
     /*

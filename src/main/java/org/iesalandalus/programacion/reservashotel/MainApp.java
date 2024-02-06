@@ -72,7 +72,8 @@ public class MainApp {
 				mostrarReservas();
 			}
 			
-			if (opcion.equals(Opcion.CONSULTAR_DISPONIBILIDAD)) {reservas.getReservas(Consola.leerTipoHabitacion());}
+			if (opcion.equals(Opcion.CONSULTAR_DISPONIBILIDAD)) {
+				reservas.getReservas(Consola.leerTipoHabitacion());}
 
 		} while(opcion!=Opcion.SALIR);
 	}
@@ -112,7 +113,8 @@ public class MainApp {
 	
 	public static void mostrarHuespedes() {
 		if(huespedes.getTamano()>0) {
-			System.out.println(huespedes.get());
+			for (int i=0;i<huespedes.getTamano();i++)
+				System.out.println(huespedes.get()[i]);
 		}
 		else {
 			System.out.println("No hay ningun huesped");
@@ -149,11 +151,10 @@ public class MainApp {
 	public static void mostrarHabitacion() {
 		if(habitaciones.getTamano()>0) {
 			
-			Habitacion [] listaHabitaciones = habitaciones.get();
+			Habitacion [] nuevoArray = habitaciones.get();
 			
-			//Bucle que las muestra
-			for (int i = 0; i < listaHabitaciones.length; i++) {
-				System.out.println(listaHabitaciones[i]);
+			for (int i = 0; i < nuevoArray.length; i++) {
+				System.out.println(nuevoArray[i]);
 			}
 			
 		}
@@ -181,20 +182,16 @@ public class MainApp {
 	}
 	
 	public static void listarReservas(Huesped huesped) {
-		/*pdte*/
-		//Llamamos al metodo getReservas de la la clase Reservas que busca
-		//las reservas para el huesped
+
 		Reserva[] listadoReservas = reservas.getReservas(huesped);
 		
-		//Si el metodo nos ha devuelto un listado distinto de null
 		if (listadoReservas != null) {
 			
-			//Bucle que las muestra segun el toString de Reserva
 			for (int i = 0; i < listadoReservas.length; i++) {
 				System.out.println(listadoReservas[i]);
 			}
 		}
-		//Si no tienes reservas mostramos mensaje
+
 		else {
 			System.out.println("No existen reservas para ese huesped.");
 		}
@@ -202,7 +199,19 @@ public class MainApp {
 	}
 	
 	public static void listarReservas(TipoHabitacion tipoHabitacion) {
-		/*pdte*/
+
+		Reserva[] listadoReservas = reservas.getReservas(tipoHabitacion);
+		
+		if (listadoReservas != null) {
+			
+			for (int i = 0; i < listadoReservas.length; i++) {
+				System.out.println(listadoReservas[i]);
+			}
+		}
+
+		else {
+			System.out.println("No existen reservas para este tipo de habitacion.");
+		}
 	}
 	
 	public static Reserva[] getReservasAnulables(Reserva [] reservasAAnular) {
@@ -210,12 +219,8 @@ public class MainApp {
 		Reserva[] listaAnulables = new Reserva[reservasAAnular.length];
 		int posicion = 0;
 		
-		//Reccorremos lista reservas a anular
 		for (int i = 0; i < reservasAAnular.length; i++) {
-			
-			//si la fecha de inicio es posterior a la de hoy
 			if(reservasAAnular[i].getFechaInicioReserva().isAfter(LocalDate.now())) {
-				//Añado la reserva a la lista
 				listaAnulables[posicion] = reservasAAnular[i];
 				posicion++;
 			}		
@@ -231,23 +236,16 @@ public class MainApp {
 	
 	public static void anularReserva() throws OperationNotSupportedException {
 		
-		//Recogemos las reservas del huesped según su DNI
+	
 		Reserva [] reservaHuesped=reservas.getReservas(Consola.getHuespedPorDni());
 		
-		//Si tiene reservas
 		if (reservaHuesped.length > 0) {
 			
-			//Filtrar aquellas reservas que son anulables
 			Reserva [] reservaAnulables=getReservasAnulables(reservaHuesped);
 			
-			//Si tiene reservas que son anulables
 			if (reservaAnulables.length > 0) {
-
-				//Recorremos la lista de reservas anulables
 				for (int i=0;i<reservaAnulables.length;i++) {
-					//Si la reserva anulable tiene datos
 					if (reservaAnulables[i]!=null) {
-						//borro la reserva de la lista general
 						reservas.borrar(reservaAnulables[i]);
 					}
 				}
@@ -262,25 +260,28 @@ public class MainApp {
 	}
 	
 	public static void mostrarReservas() {
-		if(reservas.getTamano()>=1) {
-			reservas.get();
-		}else {System.out.println("No hay reservas");}
+		if(reservas.getTamano()>0) {
+			
+			Reserva [] nuevoArray = reservas.get();
+			
+			for (int i = 0; i < nuevoArray.length; i++) {
+				System.out.println(nuevoArray[i]);
+			}
+			
+		}
+		else {System.out.println("No hay ningun huesped");}
 	}
 	
 	public static Habitacion consultarDisponibilidad(TipoHabitacion tipoHabitacion, LocalDate fechaInicioReserva, LocalDate fechaFinReserva) {
 		
 		Habitacion habitacion = null;
 		
-		//Recorremos la lista de habitaciones
+		
 		for (int i = 0; i < habitaciones.getTamano() && habitacion == null; i++) {
 			
 			boolean reservada = true;
 			
-			//Buscar si hay una reserva para esa habitacion en las fechas indicadas
 			for (int j = 0; j < reservas.getTamano(); j++) {
-				//Si la habitacion es igual a la habitacion de la reserva
-				//Y el fin de la reserva es anterior a la fecha de entrada elegida
-				//O el inicio de la reserva es posterior a la fecha de salida
 				if (reservas.get()[j].getHabitacion().equals(habitaciones.get()[i]) 
 					&& (reservas.get()[j].getFechaFinReserva().isBefore(fechaInicioReserva)
 					|| reservas.get()[j].getFechaInicioReserva().isAfter(fechaFinReserva))){
@@ -288,9 +289,7 @@ public class MainApp {
 				}
 			}
 			
-			//Si la habitacion no está reserva
 			if (reservada == false) {
-				//La asigno para devolverla
 				habitacion = habitaciones.get()[i];
 			}
 		}

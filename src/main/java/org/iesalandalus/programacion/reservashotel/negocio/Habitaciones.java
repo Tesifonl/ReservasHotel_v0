@@ -31,8 +31,10 @@ public class Habitaciones {
 		Habitacion [] copiahabitaciones=new Habitacion [coleccionHabitaciones.length];
 		
 		for (int i=0;i<coleccionHabitaciones.length;i++) {
-		if (coleccionHabitaciones[i]!=null) {copiahabitaciones[i]=new Habitacion(coleccionHabitaciones[i]);}
-		else {copiahabitaciones[i]=null;}
+			if (coleccionHabitaciones[i]!=null) {
+				copiahabitaciones[i]=new Habitacion(coleccionHabitaciones[i]);}
+		else {
+			copiahabitaciones[i]=null;}
 		}
 		return copiahabitaciones;
 	}
@@ -144,13 +146,12 @@ public class Habitaciones {
 				contador=i;
 				if(coleccionHabitaciones[i]!=null && coleccionHabitaciones[i].equals(habitacion)) {
 				encontrado=true;indice=contador;}}
-				
-			
+						
 			if(encontrado==true){coleccionHabitaciones[indice]=null;
 			desplazarUnaPosicionHaciaIzquierda(indice);}
 			else {throw new OperationNotSupportedException("ERROR: No existe ninguna habitaci�n como la indicada.");}	
 		
-	}else {throw new NullPointerException("ERROR: No se puede borrar una habitaci�n nula.");}
+		}else {throw new NullPointerException("ERROR: No se puede borrar una habitaci�n nula.");}
 	}
 	
 	

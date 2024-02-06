@@ -169,7 +169,7 @@ public class Consola {
 			double precio=Entrada.real();
 			String identificador=String.valueOf(planta)+String.valueOf(puerta);
 			System.out.println("Introduce una  tipo de habitacion: ");
-			TipoHabitacion tipoHabitacion=leerTipoHabitacion();
+			TipoHabitacion tipoHabitacion=TipoHabitacion.valueOf(Entrada.cadena());
 
 			Habitacion habitacion=new Habitacion( planta,puerta,precio,identificador,tipoHabitacion);
 			return habitacion;
