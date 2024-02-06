@@ -235,18 +235,16 @@ public class MainApp {
 	}
 	
 	public static void anularReserva() throws OperationNotSupportedException {
+		Reserva [] nuevoArray1=reservas.getReservas(Consola.getHuespedPorDni());
 		
-	
-		Reserva [] reservaHuesped=reservas.getReservas(Consola.getHuespedPorDni());
-		
-		if (reservaHuesped.length > 0) {
+		if (nuevoArray1.length > 0) {
 			
-			Reserva [] reservaAnulables=getReservasAnulables(reservaHuesped);
+			Reserva [] nuevoArray2=getReservasAnulables(nuevoArray1);
 			
-			if (reservaAnulables.length > 0) {
-				for (int i=0;i<reservaAnulables.length;i++) {
-					if (reservaAnulables[i]!=null) {
-						reservas.borrar(reservaAnulables[i]);
+			if (nuevoArray2.length > 0) {
+				for (int i=0;i<nuevoArray2.length;i++) {
+					if (nuevoArray2[i]!=null) {
+						reservas.borrar(nuevoArray2[i]);
 					}
 				}
 			}
