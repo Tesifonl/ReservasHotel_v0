@@ -294,7 +294,7 @@ public class MainApp {
 		for (int i = 0; i < reservas.getTamano(); i++) {
 			if (reservas.get()[i].getHabitacion().getTipoHabitacion().equals(tipoHabitacion)
 				&& (reservas.get()[i].getFechaFinReserva().isBefore(fechaInicioReserva)
-				|| reservas.get()[i].getFechaInicioReserva().isAfter(fechaFinReserva))){
+				&& reservas.get()[i].getFechaInicioReserva().isAfter(fechaFinReserva))){
 				reservada = true;
 				habitacion=reservas.get()[i].getHabitacion();
 				}
